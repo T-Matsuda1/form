@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>PORTFOLIO</title>
+  <link rel="stylesheet" type="text/css" href="stylesheet.css">
+</head>
+<body>
+  <div class="header">
+    <div class="header-left"></div>
+    <div class="header-right">
+      <ul>
+        <li class="selected">掲示板</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="contact-form">
+      <div class="form-title">掲示板</div>
+      <div class="form--title">あなたが学習しているプログラミング言語は？</div>
+      <form method="post" action="sent.php">
+        <div class="form-item">ニックネーム</div>
+        <input type="text" name="name">
+
+        <div class="form-item">プログラミング言語</div>
+
+        <?php 
+          $types = array('PHP', 'Ruby', 'JavaScript', 'Python','Java', 'C言語', 'C#','その他');
+         ?>
+        
+        <select name="contents">
+          <option value="未選択">選択してください</option>
+          
+          <?php
+          foreach($types as $type){
+          echo "<option value='{$type}'>{$type}</option>";
+          }
+          ?>
+          
+        </select>
+               
+        <div class="form-item">ひとことコメント</div>
+        <textarea name="body"></textarea>
+
+        <input type="submit" value="送信">
+      </form>
+    </div>
+  </div>
+
+  <!-- 追記１ここから -->
+<?php
+//DB接続情報を設定します。
+$pdo = new PDO(
+    "mysql:dbname=sample;host=localhost","root","",array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET CHARACTER SET `utf8`")
+);
+//ここで「DB接続NG」だった場合、接続情報に誤りがあります。
+if ($pdo) {
+    echo "";
+} else {
+    echo "";
+}
+//SQLを実行。
+$regist = $pdo->prepare("SELECT * FROM post");
+$regist->execute();
+//ここで「登録失敗」だった場合、SQL文に誤りがあります。
+if ($regist) {
+    echo "";
+} else {
+    echo "";
+}
+?>
+ 
+<!-- 追記２ここから -->
+<section>
+	<div class="ichiran">投稿内容一覧</div>
+		<?php foreach($regist as $loop):?>
+			<div class="toukou1">No：<?php echo $loop['id']?></div>
+			<div class="toukou2">名前：<?php echo $loop['name']?></div>
+			<div class="toukou3">投稿内容：<?php echo $loop['contents']?></div>
+			<div class="toukou4">------------------------------------------</div>
+		<?php endforeach;?>
+	
+</section>
+
+</body>
+</html>
